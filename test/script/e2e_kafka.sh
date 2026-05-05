@@ -45,6 +45,14 @@ kubectl wait --for=condition=Established crd/kafkatopics.kafka.strimzi.io \
   --kubeconfig "$KAFKA_KUBECONFIG" --timeout=120s
 kubectl wait --for=condition=Established crd/kafkausers.kafka.strimzi.io \
   --kubeconfig "$KAFKA_KUBECONFIG" --timeout=120s
+kubectl wait --for=condition=Established crd/kafkanodepools.kafka.strimzi.io \
+  --kubeconfig "$KAFKA_KUBECONFIG" --timeout=120s
+
+# Force kubectl to refresh its API discovery cache so the newly established CRDs
+# are visible to "kubectl apply -k". Without this, apply fails with "no matches for
+# kind Kafka" even though the CRDs are Established on the server, because kubectl's
+# local discovery cache (~/.kube/cache/discovery/) is still stale.
+kubectl api-resources --kubeconfig "$KAFKA_KUBECONFIG" --verbs=list > /dev/null 2>&1 || true
 
 node_port_host=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}' --kubeconfig "$KAFKA_KUBECONFIG" | sed -e 's#^https\?://##' -e 's/:.*//')
 sed -i -e "s;NODE_PORT_HOST;$node_port_host;" "$TEST_DIR"/manifest/kafka/kafka-cluster/kafka-cluster.yaml
