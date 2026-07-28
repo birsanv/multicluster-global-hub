@@ -157,7 +157,7 @@ var _ = Describe("Transport Identity E2E", Label("e2e-test-transport-identity"),
 				spoofMigrationNS,
 				testClusterName,
 			)
-			Expect(publisher.SendToTopic(ctx, publisher.SpecTopic(), evt)).To(Succeed())
+			Expect(publisher.SendToTopic(ctx, publisher.MigrationTopic(), evt)).To(Succeed())
 
 			Consistently(func() error {
 				ns := &corev1.Namespace{}
@@ -179,7 +179,7 @@ var _ = Describe("Transport Identity E2E", Label("e2e-test-transport-identity"),
 				spoofMigrationNS,
 				testClusterName,
 			)
-			Expect(publisher.SendToTopic(ctx, publisher.SpecTopic(), evt)).To(Succeed())
+			Expect(publisher.SendToTopic(ctx, publisher.MigrationTopic(), evt)).To(Succeed())
 
 			Consistently(func() error {
 				ns := &corev1.Namespace{}
